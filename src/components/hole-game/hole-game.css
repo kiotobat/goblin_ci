@@ -1,0 +1,58 @@
+.hole-game {
+  max-width: 370px;
+  min-height: 410px;
+  margin: auto;
+  font-size: 20px;
+}
+
+.hole-game__statistics {
+  display: flex;
+  justify-content: space-around;
+  padding-bottom: 20px;
+}
+
+.hole-game__statistics span {
+  font-weight: bolder;
+}
+
+.hole-game-hits {
+  color: rgb(10, 175, 0);
+}
+
+.hole-game-misses {
+  color: rgb(140, 0, 0);
+}
+
+.hole-game__container {
+  display: grid;
+  grid-template: repeat(4, 85px) / repeat(4, 4fr);
+  gap: 10px;
+}
+
+.hole-game__loss {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hole-game__loss p {
+  margin: 20% 0 0;
+}
+
+.hole {
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.hole_with-goblin {
+  background-color: crimson;
+  background-image: url(/src/img/goblin.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  cursor: url(/src/img/minimal-hammer-pointer.png) 3 10, grab;
+}
+
+.hidden {
+  display: none;
+}
