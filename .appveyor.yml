@@ -25,4 +25,4 @@ deploy_script: # скрипт развёртывания
   - git config --global user.name AppVeyor
   - git config --global user.email ci@appveyor.com
   - echo "https://$GITHUB_TOKEN:x-oauth-basic@github.com" > "$HOME/.git-credentials"
-  - npx gh-pages -d dist -u "appveyor-bot <ci@appveyor>"
+  - npx gh-pages -d dist -r "https://$GITHUB_TOKEN@github.com/kiotobat/goblin_ci.git"
