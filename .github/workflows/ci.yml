@@ -18,11 +18,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Copy site files
+      - name: Сборка сайта
         run: |
-          mkdir -p dist
-          cp -R * dist
-          rm -rf dist/.git dist/.github
+          # Если сборка уже создаёт dist, можно этот шаг заменить на вашу команду сборки
+          echo "Сборка сайта"
+      - name: Подготовка файлов для деплоя
+        run: |
+          rm -rf dist
+          mkdir dist
+          rsync -av --exclude='dist' ./ dist
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
