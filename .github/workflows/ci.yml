@@ -1,4 +1,4 @@
-name: Netology Goblin
+name: GitHub Pages Deploy
 
 on:
   push:
@@ -14,18 +14,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  eslint:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-  build:
-    needs: [eslint, test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+      - name: Copy site files
+        run: |
+          mkdir -p dist
+          cp -R * dist
+          rm -rf dist/.git dist/.github
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: 'dist'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
