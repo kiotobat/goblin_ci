@@ -10,7 +10,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: 'pages'
+  group: pages
   cancel-in-progress: false
 
 jobs:
@@ -18,21 +18,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Сборка сайта
+      - name: Copy project files
         run: |
-          # Если сборка уже создаёт dist, можно этот шаг заменить на вашу команду сборки
-          echo "Сборка сайта"
-      - name: Подготовка файлов для деплоя
-        run: |
-          rm -rf dist
-          mkdir dist
-          rsync -av --exclude='dist' ./ dist
+          mkdir -p public
+          rsync -av --exclude='.git' --exclude='.github' ./ public
+      - name: List public folder
+        run: ls -la public
       - name: Setup Pages
         uses: actions/configure-pages@v4
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'dist'
+          path: public
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
