@@ -18,54 +18,76 @@ const goblin_namespaceObject = __webpack_require__.p + "2dbd01ce16c0fa83cb67.png
 const containerElements = document.querySelectorAll('.place__container');
 const countWinView = document.querySelector('.countWin');
 const countOverView = document.querySelector('.countOver');
-let num;
-const condition = true;
-let count = 0;
-const arrCount = [];
+
+// Модальное окно
+const modal = document.createElement('div');
+modal.className = 'modal hidden';
+modal.innerHTML = '<div class="modal__content"><span class="modal__text"></span><button class="modal__btn">OK</button></div>';
+document.body.appendChild(modal);
+const modalText = modal.querySelector('.modal__text');
+const modalBtn = modal.querySelector('.modal__btn');
+modalBtn.onclick = () => {
+  modal.classList.add('hidden');
+};
+let prevGoblinIndex = null;
+let goblinIndex = null;
 let countWin = 0;
-function handleClick(e) {
-  const place = e.target;
-  const goblinElement = place.querySelector('img') || place.tagName === 'IMG' ? place : null;
-  if (goblinElement) {
-    countWin++;
-    countWinView.textContent = countWin;
-    arrCount[count - 1] = true;
-    goblinElement.remove();
-    console.log('Kill the goblin');
-  } else {
-    console.log('you Missing');
-    arrCount[count - 1] = false;
-    countOverView.textContent = 5 - arrCount.filter(item => item === false).length;
-  }
+let countMiss = 0;
+let gameOver = false;
+function showModal(text) {
+  modalText.textContent = text;
+  modal.classList.remove('hidden');
 }
-const intervalVisible = setInterval(() => {
-  while (condition) {
-    const random = Math.floor(Math.random() * (4 - 1 + 1)) + 1;
-    if (random !== num) {
-      num = random;
-      break;
+function clearField() {
+  containerElements.forEach(item => item.innerHTML = '');
+}
+function getRandomIndex(exclude) {
+  let idx;
+  do {
+    idx = Math.floor(Math.random() * containerElements.length);
+  } while (idx === exclude);
+  return idx;
+}
+function nextTurn() {
+  clearField();
+  if (goblinIndex !== null && !gameOver) {
+    // Если гоблин не был пойман — это промах
+    countMiss++;
+    countOverView.textContent = 5 - countMiss;
+    if (countMiss >= 5) {
+      showModal('Game over');
+      clearInterval(gameInterval);
+      gameOver = true;
+      return;
     }
   }
+  goblinIndex = getRandomIndex(prevGoblinIndex);
+  prevGoblinIndex = goblinIndex;
   const img = document.createElement('img');
   img.src = goblin_namespaceObject;
-  containerElements[num - 1].append(img);
-}, 1000);
-const IntervalShow = setInterval(() => {
-  arrCount.push(null);
-  console.log(arrCount, count);
-  if (arrCount[count - 1] === null) {
-    arrCount[count - 1] = false;
+  img.style.pointerEvents = 'none';
+  containerElements[goblinIndex].append(img);
+}
+function handleClick(e) {
+  if (gameOver) return;
+  const idx = Array.from(containerElements).indexOf(e.currentTarget);
+  if (idx === goblinIndex) {
+    countWin++;
+    countWinView.textContent = countWin;
+    goblinIndex = null;
+    e.currentTarget.innerHTML = '';
+  } else {
+    countMiss++;
+    countOverView.textContent = 5 - countMiss;
+    if (countMiss >= 5) {
+      showModal('Game over');
+      clearInterval(gameInterval);
+      gameOver = true;
+    }
   }
-  containerElements.forEach(item => item.innerHTML = '');
-  countOverView.textContent = 5 - arrCount.filter(item => item === false).length;
-  if (arrCount.filter(item => item === false).length >= 5) {
-    alert('Game over');
-    clearInterval(intervalVisible);
-    clearInterval(IntervalShow);
-  }
-  count++;
-}, 2000);
+}
 containerElements.forEach(item => item.addEventListener('click', handleClick));
+const gameInterval = setInterval(nextTurn, 1000);
 ;// ./src/index.js
 
 
